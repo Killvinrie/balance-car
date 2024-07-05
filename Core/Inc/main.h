@@ -81,18 +81,22 @@ void Error_Handler(void);
 #define TRIG_GPIO_Port GPIOA
 #define ECHO_Pin GPIO_PIN_10
 #define ECHO_GPIO_Port GPIOA
+#define ECHO_EXTI_IRQn EXTI15_10_IRQn
 #define Mortor_R_Pin GPIO_PIN_11
 #define Mortor_R_GPIO_Port GPIOA
 #define KEY1_Pin GPIO_PIN_12
 #define KEY1_GPIO_Port GPIOA
+#define KEY1_EXTI_IRQn EXTI15_10_IRQn
 #define KEY2_Pin GPIO_PIN_15
 #define KEY2_GPIO_Port GPIOA
+#define KEY2_EXTI_IRQn EXTI15_10_IRQn
 #define MPU_SCL_Pin GPIO_PIN_3
 #define MPU_SCL_GPIO_Port GPIOB
 #define MPU_SDA_Pin GPIO_PIN_4
 #define MPU_SDA_GPIO_Port GPIOB
 #define MPU_INT_Pin GPIO_PIN_5
 #define MPU_INT_GPIO_Port GPIOB
+#define MPU_INT_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 
