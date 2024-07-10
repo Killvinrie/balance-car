@@ -21,6 +21,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "oled.h"
+#include "IIC.h"
+#include "mpu6050.h"
+#include "inv_mpu.h"
+#include "inv_mpu_dmp_motion_driver.h"
+#include "stdio.h"
 
 /* USER CODE END Includes */
 
@@ -51,7 +57,8 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-
+float pitch,roll,yaw;
+uint8_t display_buf[20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,6 +117,13 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  OLED_Init();
+  OLED_Clear();
+  MPU_Init();
+  mpu_dmp_init();
+  OLED_ShowString(0,0,"Init success!",16);
+  
+  
 
   /* USER CODE END 2 */
 
@@ -117,8 +131,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_Delay(10);
+    mpu_dmp_get_data(&pitch,&roll,&yaw);
+    sprintf((char *)display_buf,"pitch : %.2f",pitch);
+    OLED_ShowString(0,2,display_buf,16);
+    sprintf((char *)display_buf,"pitch : %.2f",roll);
+    OLED_ShowString(0,4,display_buf,16);
+    sprintf((char *)display_buf,"pitch : %.2f",yaw);
+    OLED_ShowString(0,6,display_buf,16);
+
     /* USER CODE END WHILE */
 
+ 
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -217,9 +241,9 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
+  htim1.Init.Prescaler = 71;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65535;
+  htim1.Init.Period = 100;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -520,7 +544,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : KEY1_Pin KEY2_Pin */
   GPIO_InitStruct.Pin = KEY1_Pin|KEY2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -528,7 +552,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = MPU_SCL_Pin|MPU_SDA_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MPU_INT_Pin */
