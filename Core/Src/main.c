@@ -133,11 +133,11 @@ int main(void)
   {
     HAL_Delay(10);
     mpu_dmp_get_data(&pitch,&roll,&yaw);
-    sprintf((char *)display_buf,"pitch : %.2f",pitch);
+    sprintf((char *)display_buf,"pitch:%.2f",pitch);
     OLED_ShowString(0,2,display_buf,16);
-    sprintf((char *)display_buf,"pitch : %.2f",roll);
+    sprintf((char *)display_buf,"pitch:%.2f",roll);
     OLED_ShowString(0,4,display_buf,16);
-    sprintf((char *)display_buf,"pitch : %.2f",yaw);
+    sprintf((char *)display_buf,"pitch:%.2f",yaw);
     OLED_ShowString(0,6,display_buf,16);
 
     /* USER CODE END WHILE */
