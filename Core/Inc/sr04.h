@@ -15,4 +15,5 @@ extern float distance;
 extern SR04_statemachine SR04_STATE;
 
 void Distance_Trig(void);
+void ECHO_Callback(void);
 #endif

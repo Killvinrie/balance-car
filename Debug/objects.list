@@ -2,6 +2,7 @@
 "./Core/Src/inv_mpu.o"
 "./Core/Src/inv_mpu_dmp_motion_driver.o"
 "./Core/Src/main.o"
+"./Core/Src/motor.o"
 "./Core/Src/mpu6050.o"
 "./Core/Src/oled.o"
 "./Core/Src/sr04.o"

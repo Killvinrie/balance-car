@@ -11,6 +11,8 @@
         "stm32f1xx_hal_conf.h": "c",
         "sr04.h": "c",
         "main.h": "c",
-        "stm32f1xx_hal_tim.h": "c"
+        "stm32f1xx_hal_tim.h": "c",
+        "motor.h": "c",
+        "math.h": "c"
     }
 }
