@@ -27,7 +27,7 @@
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
 #include "stdio.h"
-
+#include "sr04.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,7 +77,14 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+// void HAL_IncTick(void)
+// {
+//   uwTick += uwTickFreq;
+//   if(uwTick % 50 ==0)
+//   {
+//     SR04_STATE = SR04_READY;
+//   }
+// }
 /* USER CODE END 0 */
 
 /**
@@ -131,14 +138,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+      Distance_Trig();
+
     HAL_Delay(10);
     mpu_dmp_get_data(&pitch,&roll,&yaw);
     sprintf((char *)display_buf,"pitch:%.2f",pitch);
     OLED_ShowString(0,2,display_buf,16);
-    sprintf((char *)display_buf,"pitch:%.2f",roll);
+    sprintf((char *)display_buf,"roll:%.2f",roll);
     OLED_ShowString(0,4,display_buf,16);
-    sprintf((char *)display_buf,"pitch:%.2f",yaw);
+    sprintf((char *)display_buf,"yaw:%.2f",yaw);
     OLED_ShowString(0,6,display_buf,16);
+
+      sprintf((char *)display_buf,"Distance:%.2f",distance);
+      OLED_ShowString(0,0,display_buf,16);
 
     /* USER CODE END WHILE */
 

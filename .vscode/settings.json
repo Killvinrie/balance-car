@@ -8,6 +8,9 @@
         "oledfont.h": "c",
         "compare": "c",
         "stm32f1xx_hal_i2c.h": "c",
-        "stm32f1xx_hal_conf.h": "c"
+        "stm32f1xx_hal_conf.h": "c",
+        "sr04.h": "c",
+        "main.h": "c",
+        "stm32f1xx_hal_tim.h": "c"
     }
 }
