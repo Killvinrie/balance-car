@@ -59,6 +59,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ENCODER_L1_Pin GPIO_PIN_0
+#define ENCODER_L1_GPIO_Port GPIOA
+#define ENCODER_L2_Pin GPIO_PIN_1
+#define ENCODER_L2_GPIO_Port GPIOA
 #define HC05_TX_Pin GPIO_PIN_2
 #define HC05_TX_GPIO_Port GPIOA
 #define HC05_RX_Pin GPIO_PIN_3
@@ -97,6 +101,10 @@ void Error_Handler(void);
 #define MPU_INT_Pin GPIO_PIN_5
 #define MPU_INT_GPIO_Port GPIOB
 #define MPU_INT_EXTI_IRQn EXTI9_5_IRQn
+#define ENCODER_R1_Pin GPIO_PIN_6
+#define ENCODER_R1_GPIO_Port GPIOB
+#define ENCODER_R2_Pin GPIO_PIN_7
+#define ENCODER_R2_GPIO_Port GPIOB
 #define OLED_SCL_Pin GPIO_PIN_8
 #define OLED_SCL_GPIO_Port GPIOB
 #define OLED_SDA_Pin GPIO_PIN_9

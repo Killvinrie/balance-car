@@ -29,6 +29,7 @@
 #include "stdio.h"
 #include "sr04.h"
 #include "motor.h"
+#include "encoder.h"
 
 /* USER CODE END Includes */
 
@@ -62,6 +63,7 @@ UART_HandleTypeDef huart3;
 float pitch, roll, yaw;
 uint8_t display_buf[20];
 int duty;
+int Encoder_L, Encoder_R;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,28 +101,30 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     duty = -duty;
     Duty_motor(duty, duty);
   }
-  else if(GPIO_Pin == KEY2_Pin)// KEY2   // change duty
+  else if (GPIO_Pin == KEY2_Pin) // KEY2   // change duty
   {
-    if(duty >0)
+    if (duty > 0)
     {
       duty += 1000;
-      if(duty > 7200)
+      if (duty > 7200)
       {
         duty = 0;
       }
     }
     else
     {
-      duty -=1000;
-      if(duty < -7200)
+      duty -= 1000;
+      if (duty < -7200)
       {
-        duty=0;
+        duty = 0;
       }
     }
     Duty_motor(duty, duty);
   }
-  else  //GPIO_Pin == MPU_INT_Pin)
+  else // GPIO_Pin == MPU_INT_Pin)
   {
+    Encoder_L = Get_Speed(&htim2);
+    Encoder_R = Get_Speed(&htim4);
     // do nothing.
   }
 }
@@ -168,11 +172,13 @@ int main(void)
 
   MPU_Init();
   mpu_dmp_init();
-  OLED_ShowString(0, 0, "Init success!", 16);
+  // OLED_ShowString(0, 0, "Init success!", 16);
 
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
-  Duty_motor(-5000, 6000);
+  // Duty_motor(-5000, 6000); //test motor
+  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
   /* USER CODE END 2 */
 
@@ -180,19 +186,33 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    // if (uwTick % 10 == 0)
+    // {
+    //   Encoder_L = Get_Speed(&htim2);
+    //   Encoder_R = Get_Speed(&htim4);
+    //   sprintf((char *)display_buf, "ENC_L:%d      ", Encoder_L);
+    //   OLED_ShowString(0, 0, display_buf, 8);
+    //   sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
+    //   OLED_ShowString(0, 1, display_buf, 8);
+    // }
 
     Distance_Trig();
 
     mpu_dmp_get_data(&pitch, &roll, &yaw);
-    sprintf((char *)display_buf, "pitch:%.2f", pitch);
-    OLED_ShowString(0, 2, display_buf, 16);
-    sprintf((char *)display_buf, "roll:%.2f", roll);
-    OLED_ShowString(0, 4, display_buf, 16);
-    sprintf((char *)display_buf, "yaw:%.2f", yaw);
-    OLED_ShowString(0, 6, display_buf, 16);
+    sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
+    OLED_ShowString(0, 2, display_buf, 8);
+    sprintf((char *)display_buf, "roll:%.2f   ", roll);
+    OLED_ShowString(0, 3, display_buf, 8);
+    sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
+    OLED_ShowString(0, 4, display_buf, 8);
 
-    sprintf((char *)display_buf, "Distance:%.2f", distance);
-    OLED_ShowString(0, 0, display_buf, 16);
+    sprintf((char *)display_buf, "Distance:%.2f   ", distance);
+    OLED_ShowString(0, 5, display_buf, 8);
+
+    sprintf((char *)display_buf, "ENC_L:%d      ", Encoder_L);
+    OLED_ShowString(0, 0, display_buf, 8);
+    sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
+    OLED_ShowString(0, 1, display_buf, 8);
 
     /* USER CODE END WHILE */
 
@@ -374,7 +394,7 @@ static void MX_TIM2_Init(void)
   htim2.Init.Period = 65535;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
@@ -466,7 +486,7 @@ static void MX_TIM4_Init(void)
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
