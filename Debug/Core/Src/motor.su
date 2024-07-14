@@ -1,2 +1,2 @@
-../Core/Src/motor.c:6:5:abs	16	static
-../Core/Src/motor.c:16:6:Duty_motor	16	static
+../Core/Src/motor.c:5:5:abs	0	static
+../Core/Src/motor.c:15:6:Duty_motor	16	static

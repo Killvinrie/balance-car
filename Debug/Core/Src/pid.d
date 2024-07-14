@@ -1,4 +1,4 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Core/Src/pid.o: ../Core/Src/pid.c ../Core/Inc/pid.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -25,11 +25,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/oled.h ../Core/Inc/IIC.h ../Core/Src/mpu6050.h \
- ../Core/Inc/inv_mpu.h ../Core/Inc/inv_mpu_dmp_motion_driver.h \
- ../Core/Inc/sr04.h ../Core/Inc/main.h ../Core/Inc/motor.h \
- ../Core/Inc/encoder.h ../Core/Inc/pid.h
-../Core/Inc/main.h:
+ ../Core/Inc/main.h ../Core/Inc/encoder.h ../Core/Inc/motor.h \
+ ../Core/Src/mpu6050.h ../Core/Inc/IIC.h ../Core/Inc/inv_mpu.h \
+ ../Core/Inc/inv_mpu_dmp_motion_driver.h ../Core/Inc/main.h
+../Core/Inc/pid.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
@@ -56,13 +55,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-../Core/Inc/oled.h:
-../Core/Inc/IIC.h:
+../Core/Inc/main.h:
+../Core/Inc/encoder.h:
+../Core/Inc/motor.h:
 ../Core/Src/mpu6050.h:
+../Core/Inc/IIC.h:
 ../Core/Inc/inv_mpu.h:
 ../Core/Inc/inv_mpu_dmp_motion_driver.h:
-../Core/Inc/sr04.h:
 ../Core/Inc/main.h:
-../Core/Inc/motor.h:
-../Core/Inc/encoder.h:
-../Core/Inc/pid.h:

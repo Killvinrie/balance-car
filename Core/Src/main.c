@@ -30,6 +30,7 @@
 #include "sr04.h"
 #include "motor.h"
 #include "encoder.h"
+#include "pid.h"
 
 /* USER CODE END Includes */
 
@@ -61,10 +62,9 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-float pitch, roll, yaw;
+
 uint8_t display_buf[20];
-int duty;
-int Encoder_L, Encoder_R;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -125,9 +125,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   else // GPIO_Pin == MPU_INT_Pin)
   {
-    Encoder_L = Get_Speed(&htim2);
-    Encoder_R = Get_Speed(&htim4);
+    // Encoder_L = Get_Speed(&htim2);
+    // Encoder_R = Get_Speed(&htim4);
     // do nothing.
+    control();
   }
 }
 /* USER CODE END 0 */
@@ -176,6 +177,9 @@ int main(void)
   MPU_Init();
   mpu_dmp_init();
   // OLED_ShowString(0, 0, "Init success!", 16);
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);  //Enable PB5 interrupt after the mpu was initialized
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
 
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
@@ -201,7 +205,6 @@ int main(void)
 
     Distance_Trig();
 
-    mpu_dmp_get_data(&pitch, &roll, &yaw);
     sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
     OLED_ShowString(0, 2, display_buf, 8);
     sprintf((char *)display_buf, "roll:%.2f   ", roll);
@@ -596,7 +599,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel6_IRQn);
 
 }
@@ -659,15 +662,15 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : MPU_INT_Pin */
   GPIO_InitStruct.Pin = MPU_INT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(MPU_INT_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+//  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 1, 0);
+//  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
