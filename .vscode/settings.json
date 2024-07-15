@@ -16,6 +16,7 @@
         "math.h": "c",
         "encoder.h": "c",
         "mpu6050.h": "c",
-        "inv_mpu.h": "c"
+        "inv_mpu.h": "c",
+        "pid.h": "c"
     }
 }

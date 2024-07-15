@@ -7,6 +7,7 @@
 
 extern int Encoder_L, Encoder_R;
 extern float pitch, roll, yaw;
+extern short Gyro_X,Gyro_Y,Gyro_Z;
 extern int duty;
 
 

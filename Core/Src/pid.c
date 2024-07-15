@@ -92,5 +92,5 @@ int control()
     DUTY_L = PWM_out - Turn_Out;
     DUTY_R = PWM_out + Turn_Out;
 
-    Duty_motor(DUTY_L,DUTY_R);
+    //Duty_motor(DUTY_L,DUTY_R);
 }

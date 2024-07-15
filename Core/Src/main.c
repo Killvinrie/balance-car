@@ -205,6 +205,11 @@ int main(void)
 
     Distance_Trig();
 
+    sprintf((char *)display_buf, "ENC_L:%d      ", Encoder_L);
+    OLED_ShowString(0, 0, display_buf, 8);
+    sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
+    OLED_ShowString(0, 1, display_buf, 8);
+
     sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
     OLED_ShowString(0, 2, display_buf, 8);
     sprintf((char *)display_buf, "roll:%.2f   ", roll);
@@ -215,10 +220,8 @@ int main(void)
     sprintf((char *)display_buf, "Distance:%.2f   ", distance);
     OLED_ShowString(0, 5, display_buf, 8);
 
-    sprintf((char *)display_buf, "ENC_L:%d      ", Encoder_L);
-    OLED_ShowString(0, 0, display_buf, 8);
-    sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
-    OLED_ShowString(0, 1, display_buf, 8);
+    sprintf((char *)display_buf, "GYRO_y:%.2f   ", (float)Gyro_Y);
+    OLED_ShowString(0, 6, display_buf, 8);
 
     /* USER CODE END WHILE */
 
