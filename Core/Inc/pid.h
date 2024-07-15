@@ -17,6 +17,7 @@ extern float pitch, roll, yaw;
 extern short Gyro_X,Gyro_Y,Gyro_Z;
 extern int duty;
 extern Balance_statemachine Balance_state;
+extern int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
 
 
 int control();

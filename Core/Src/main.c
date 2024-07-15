@@ -98,17 +98,21 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     ECHO_Callback();
   }
-  else if (GPIO_Pin == KEY1_Pin) // reverse direction
+  else if (GPIO_Pin == KEY1_Pin)
   {
-
     switch (Balance_state)
     {
     case Balance_idle:
       Balance_state = Balance_running;
+      break;
     case Balance_running:
       Balance_state = Balance_stop;
+      break;
     case Balance_stop:
       Balance_state = Balance_running;
+      break;
+    default:
+      Balance_state = Balance_idle;
     }
   }
   else if (GPIO_Pin == KEY2_Pin) // KEY2   // change duty
@@ -217,19 +221,27 @@ int main(void)
     sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
     OLED_ShowString(0, 1, display_buf, 8);
 
-    sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
-    OLED_ShowString(0, 2, display_buf, 8);
+    // sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
+    // OLED_ShowString(0, 2, display_buf, 8);
+    // sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
+    // OLED_ShowString(0, 3, display_buf, 8);
     sprintf((char *)display_buf, "roll:%.2f   ", roll);
-    OLED_ShowString(0, 3, display_buf, 8);
-    sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
     OLED_ShowString(0, 4, display_buf, 8);
+    
+    sprintf((char *)display_buf, "Verti:%.d   ", Vertical_Out);
+    OLED_ShowString(0, 2, display_buf, 8);
+    sprintf((char *)display_buf, "Veloc:%d   ", Velocity_Out);
+    OLED_ShowString(0, 3, display_buf, 8);
+    // sprintf((char *)display_buf, "Distance:%.2f   ", distance);
+    // OLED_ShowString(0, 5, display_buf, 8);
 
-    sprintf((char *)display_buf, "Distance:%.2f   ", distance);
+    sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
     OLED_ShowString(0, 5, display_buf, 8);
-
-    sprintf((char *)display_buf, "GYRO_y:%.2f   ", (float)Gyro_Y);
+    sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
     OLED_ShowString(0, 6, display_buf, 8);
 
+    sprintf((char *)display_buf, "state:%d      ", Balance_state);
+    OLED_ShowString(0, 7, display_buf, 8);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

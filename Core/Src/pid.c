@@ -12,28 +12,30 @@
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim4;
 
-int duty; // sssssssssssssssssssssssss
+Balance_statemachine Balance_state;
+
+int duty; // for test
 int Encoder_L, Encoder_R;
 float pitch, roll, yaw;
 short Gyro_X, Gyro_Y, Gyro_Z;
 short Acc_X, Acc_Y, Acc_Z;
 
-float Med_Angle;
+float Med_Angle = 0;
 
 // PID parameters
-float Vertical_KP = 200, Vertical_KD = 10;
-float Velocity_KP = 0.5, Velocity_KI;
+float Vertical_KP = -300;  // -500*0.6
+float Vertical_KD = -1.02; //-1.7*0.6
+float Velocity_KP = 0;  //-0.3
+float Velocity_KI;
 float Turn_KP, Turn_KD;
 
 int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
 
-Balance_statemachine Balance_state = Balance_idle;
-
-int Vertical_Loop(float Exception, float Angle, float Gyro_Y)
+int Vertical_Loop(float Exception, float Angle, float Gyro_X)
 {
-    int temp;
-    temp = Vertical_KP * (Angle - Exception) + Vertical_KD * Gyro_Y;
-    return temp;
+    int result;
+    result = Vertical_KP * (Angle - Exception) + Vertical_KD * Gyro_X;
+    return result;
 }
 
 int Velocity_Loop(int Target_Speed, int encoder_L, int encoder_R)
@@ -45,18 +47,18 @@ int Velocity_Loop(int Target_Speed, int encoder_L, int encoder_R)
     // erro
     Err = (encoder_L + encoder_R) - Target_Speed;
     // lowout filter
-    Err_Lowout = Err * (1 - a) + Err_Lowout_Last;
+    Err_Lowout = Err * (1 - a) + a * Err_Lowout_Last;
     Err_Lowout_Last = Err_Lowout;
     // calculate integral
     Err_S += Err_Lowout;
     // limit integral part
     Err_S = (Err_S > 20000) ? 20000 : (Err_S < (-20000) ? (-20000) : Err_S);
     // react to stop control signal
-    if (stop_flag == 1)
-    {
-        Err_S = 0;
-        stop_flag = 0;
-    }
+    //    if (Balance_state == Balance_stop)
+    //    {
+    //        Err_S = 0;
+    //        Balance_state = Balance_idle;
+    //    }
     // Velocity loop calculate
     result = Velocity_KP * Err_Lowout + Velocity_KI * Err_S;
 
@@ -93,5 +95,10 @@ int control()
         DUTY_R = PWM_out + Turn_Out;
 
         Duty_motor(DUTY_L, DUTY_R);
+    }
+    else if (Balance_state == Balance_stop)
+    {
+        Duty_motor(0, 0); // stop
+        Balance_state = Balance_idle;
     }
 }
