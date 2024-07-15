@@ -1,4 +1,0 @@
-../Core/Src/pid.c:33:5:Vertical_Loop	16	static
-../Core/Src/pid.c:41:5:Velocity_Loop	16	static
-../Core/Src/pid.c:67:5:Turn_Loop	16	static
-../Core/Src/pid.c:75:5:control	24	static
