@@ -6,13 +6,15 @@
 
 
 typedef enum
-{
+{	
+	Direction_G_B_DEFAULT,
 	Direction_GO,
 	Direction_BACK,
 }Remote_Direction_GB;
 
 typedef enum
 {
+	Direction_L_R_DEFAULT,
 	Direction_LEFT,
 	Direction_RIGHT
 }Remote_Direction_LR;

@@ -43,7 +43,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-Control_Mode_SM Control_Mode;
+Control_Mode_SM Control_Mode = Mode_Move;
+uint8_t BLE_DATA;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -251,30 +252,36 @@ void I2C1_EV_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-  uint8_t BLE_DATA;
+
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
   BLE_DATA = Rx_buffer[0];
-  if (BLE_DATA == "G")
+  if (BLE_DATA == 'G')
   {
-    if(Control_Mode == Mode_Move)
-    Direction_G_B = Direction_GO;
-    else Med_Angle++;
+    if (Control_Mode == Mode_Move)
+      Direction_G_B = Direction_GO;
+    else
+      Med_Angle++;
   }
-  if (BLE_DATA == "B")
+  else if (BLE_DATA == 'B')
   {
-    if(Control_Mode ==Mode_Move)
-    Direction_G_B = Direction_BACK;
-    else Med_Angle--;
+    if (Control_Mode == Mode_Move)
+      Direction_G_B = Direction_BACK;
+    else
+      Med_Angle--;
   }
-  if (BLE_DATA == "L")
+  else if (BLE_DATA == 'L')
     Direction_L_R = Direction_LEFT;
-  if (BLE_DATA == "R")
+  else if (BLE_DATA == 'R')
     Direction_L_R = Direction_RIGHT;
-  if (BLE_DATA == "S")
+  else if (BLE_DATA == 'S')
+  {
     Target_Speed = 0;
-  if (BLE_DATA == "C")
+    Direction_L_R = Direction_L_R_DEFAULT;
+    Direction_G_B = Direction_G_B_DEFAULT;
+  }
+  else if (BLE_DATA == 'C')
   {
     switch (Control_Mode)
     {
@@ -287,6 +294,10 @@ void USART2_IRQHandler(void)
       Control_Mode = Mode_Move;
       break;
     }
+  }
+  else
+  {
+    // nothing
   }
   HAL_UART_Receive_IT(&huart2, Rx_buffer, 1);
   /* USER CODE END USART2_IRQn 1 */

@@ -307,7 +307,7 @@ int main(void)
 
 
       OLED_ShowString(80, 2, Rx_buffer, 16, Highlight_Yes); // show remote instruction
-            sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
+      sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
       OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
       sprintf((char *)display_buf, "Med:%.2f  ", Med_Angle);//show Med_Angle
       OLED_ShowString(0, 6, display_buf, 8, Highlight_Yes);
@@ -315,11 +315,12 @@ int main(void)
       
 
 
-      
-      if (Control_Mode == Mode_Move)//Remote control Mode display
-        OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
-      else
-        OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
+      sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+      OLED_ShowString(80, 6, display_buf, 8, Highlight_Yes);
+      // if (Control_Mode == Mode_Move)//Remote control Mode display
+      //   OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
+      // else
+      //   OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
       // Balance state display HIGHLIGHT
       if (Balance_state == Balance_idle)
         OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);

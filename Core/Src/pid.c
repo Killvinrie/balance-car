@@ -15,8 +15,8 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim4;
 
 Balance_statemachine Balance_state;
-Remote_Direction_GB Direction_G_B;
-Remote_Direction_LR Direction_L_R;
+Remote_Direction_GB Direction_G_B = Direction_G_B_DEFAULT;
+Remote_Direction_LR Direction_L_R = Direction_L_R_DEFAULT;
 Parameter_CONFIG_SM Parameter_Config_IDX;
 
 int duty; // for test
@@ -74,11 +74,11 @@ int control()
     // transfer data to the pid loop
     if (Balance_state == Balance_running)
     {
-        if (Direction_G_B == Direction_GO)
-            Target_Speed++;
-        else
-            Target_Speed--;
-        Target_Speed = (Target_Speed > 15) ? 15 :(Target_Speed < -15) ? (-15) : Target_Speed;
+        // if (Direction_G_B == Direction_GO)
+        //     Target_Speed++;
+        // else
+        //     Target_Speed--;
+        // Target_Speed = (Target_Speed > 15) ? 15 :(Target_Speed < -15) ? (-15) : Target_Speed;
 
         Velocity_Out = Velocity_Loop(Target_Speed, Encoder_L, Encoder_R);
         Vertical_Out = Vertical_Loop(Velocity_Out + Med_Angle, roll, Gyro_X);
