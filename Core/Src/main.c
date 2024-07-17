@@ -62,9 +62,8 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-
 uint8_t display_buf[20];
-
+uint8_t Frame, FPS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,14 +83,7 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// void HAL_IncTick(void)
-// {
-//   uwTick += uwTickFreq;
-//   if(uwTick % 50 ==0)
-//   {
-//     SR04_STATE = SR04_READY;
-//   }
-// }
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == ECHO_Pin)
@@ -103,37 +95,40 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     switch (Balance_state)
     {
     case Balance_idle:
+      PAGE_SWITCH_STATE = Switched_Yes;
       Balance_state = Balance_running;
       break;
     case Balance_running:
+      PAGE_SWITCH_STATE = Switched_Yes;
       Balance_state = Balance_stop;
       break;
     case Balance_stop:
+      PAGE_SWITCH_STATE = Switched_Yes;
       Balance_state = Balance_running;
       break;
     default:
+      PAGE_SWITCH_STATE = Switched_Yes;
       Balance_state = Balance_idle;
     }
   }
-  else if (GPIO_Pin == KEY2_Pin) // KEY2   // change duty
+  else if (GPIO_Pin == KEY2_Pin) // KEY2   motor test or display page switch
   {
-    if (duty > 0)
+    // duty_test();
+    switch (OLED_PAGE_IDX)
     {
-      duty += 1000;
-      if (duty > 7200)
-      {
-        duty = 0;
-      }
+    case OLED_PAGE_Sensor:
+      PAGE_SWITCH_STATE = Switched_Yes;
+      OLED_PAGE_IDX = OLED_PAGE_Parameter;
+      break;
+    case OLED_PAGE_Parameter:
+      PAGE_SWITCH_STATE = Switched_Yes;
+      OLED_PAGE_IDX = OLED_PAGE_State;
+      break;
+    case OLED_PAGE_State:
+      PAGE_SWITCH_STATE = Switched_Yes;
+      OLED_PAGE_IDX = OLED_PAGE_Sensor;
+      break;
     }
-    else
-    {
-      duty -= 1000;
-      if (duty < -7200)
-      {
-        duty = 0;
-      }
-    }
-    Duty_motor(duty, duty);
   }
   else // GPIO_Pin == MPU_INT_Pin)
   {
@@ -141,6 +136,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     // Encoder_R = Get_Speed(&htim4);
     // do nothing.
     control();
+  }
+}
+void HAL_IncTick(void)
+{
+  uwTick += uwTickFreq;
+  if (uwTick % 1000 == 0)
+  {
+    FPS = Frame;
+    Frame = 0;
   }
 }
 /* USER CODE END 0 */
@@ -215,33 +219,82 @@ int main(void)
     // }
 
     Distance_Trig();
+    switch (OLED_PAGE_IDX)
+    {
+    case OLED_PAGE_Sensor:
+      if (PAGE_SWITCH_STATE == Switched_Yes)
+      {
+        OLED_Clear();
+        PAGE_SWITCH_STATE = Switched_No;
+      }
+      sprintf((char *)display_buf, "FPS:%d ", FPS);
+      OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
 
-    sprintf((char *)display_buf, "ENC_L:%d      ", Encoder_L);
-    OLED_ShowString(0, 0, display_buf, 8);
-    sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
-    OLED_ShowString(0, 1, display_buf, 8);
+      sprintf((char *)display_buf, "ENC_L:%d   ", Encoder_L);
+      OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
+      sprintf((char *)display_buf, "ENC_R:%d   ", Encoder_R);
+      OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
 
-    // sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
-    // OLED_ShowString(0, 2, display_buf, 8);
-    // sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
-    // OLED_ShowString(0, 3, display_buf, 8);
-    sprintf((char *)display_buf, "roll:%.2f   ", roll);
-    OLED_ShowString(0, 4, display_buf, 8);
-    
-    sprintf((char *)display_buf, "Verti:%.d   ", Vertical_Out);
-    OLED_ShowString(0, 2, display_buf, 8);
-    sprintf((char *)display_buf, "Veloc:%d   ", Velocity_Out);
-    OLED_ShowString(0, 3, display_buf, 8);
-    // sprintf((char *)display_buf, "Distance:%.2f   ", distance);
-    // OLED_ShowString(0, 5, display_buf, 8);
+      sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
+      OLED_ShowString(0, 2, display_buf, 8, Highlight_No);
+      sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
+      OLED_ShowString(0, 3, display_buf, 8, Highlight_No);
+      sprintf((char *)display_buf, "roll:%.2f   ", roll);
+      OLED_ShowString(0, 4, display_buf, 8, Highlight_No);
+      sprintf((char *)display_buf, "Distance:%.2f  ", distance);
+      OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
 
-    sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
-    OLED_ShowString(0, 5, display_buf, 8);
-    sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
-    OLED_ShowString(0, 6, display_buf, 8);
+      sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
+      OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
 
-    sprintf((char *)display_buf, "state:%d      ", Balance_state);
-    OLED_ShowString(0, 7, display_buf, 8);
+      // Balance state display HIGHLIGHT
+      if (Balance_state == Balance_idle)
+        OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
+      else
+        OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+      Frame++;
+      break;
+    case OLED_PAGE_Parameter:
+      if (PAGE_SWITCH_STATE == Switched_Yes)
+      {
+        OLED_Clear();
+        PAGE_SWITCH_STATE = Switched_No;
+      }
+      sprintf((char *)display_buf, "FPS:%d ", FPS);
+      OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
+
+      sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
+      OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+
+      // Balance state display HIGHLIGHT
+      if (Balance_state == Balance_idle)
+        OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
+      else
+        OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+      Frame++;
+      break;
+    case OLED_PAGE_State:
+      if (PAGE_SWITCH_STATE == Switched_Yes)
+      {
+        OLED_Clear();
+        PAGE_SWITCH_STATE = Switched_No;
+      }
+      sprintf((char *)display_buf, "FPS:%d ", FPS);
+      OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
+
+      sprintf((char *)display_buf, "Verti:%.d   ", Vertical_Out);
+      OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
+      sprintf((char *)display_buf, "Veloc:%d   ", Velocity_Out);
+      OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
+
+      // Balance state display HIGHLIGHT
+      if (Balance_state == Balance_idle)
+        OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
+      else
+        OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+      Frame++;
+      break;
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -690,7 +743,26 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void duty_test()
+{
+  if (duty > 0)
+  {
+    duty += 1000;
+    if (duty > 7200)
+    {
+      duty = 0;
+    }
+  }
+  else
+  {
+    duty -= 1000;
+    if (duty < -7200)
+    {
+      duty = 0;
+    }
+  }
+  Duty_motor(duty, duty);
+}
 /* USER CODE END 4 */
 
 /**

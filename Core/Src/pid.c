@@ -16,6 +16,9 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim4;
 
 Balance_statemachine Balance_state;
+Remote_Direction_GB Direction_G_B;
+Remote_Direction_LR Direction_L_R;
+
 
 int duty; // for test
 int Encoder_L, Encoder_R;
@@ -72,6 +75,7 @@ int control()
     // transfer data to the pid loop
     if (Balance_state == Balance_running)
     {
+//        if(Direction_G_B == Direction_F)
         Velocity_Out = Velocity_Loop(Target_Speed, Encoder_L, Encoder_R);
         Vertical_Out = Vertical_Loop(Velocity_Out + Med_Angle, roll, Gyro_X);
         // Turn_Out = Turn_Loop(Gyro_Z, Target_Turn);

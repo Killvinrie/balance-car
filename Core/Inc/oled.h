@@ -17,6 +17,28 @@
 #define   OLED_SDA_TOGGLE()             HAL_GPIO_TogglePin(GPIOx_OLED_PORT, OLED_SDA_PIN)
 ///
 
+typedef enum 
+{
+    OLED_PAGE_Sensor,
+    OLED_PAGE_Parameter,
+    OLED_PAGE_State
+}OLED_PAGE_SM;
+
+typedef enum 
+{
+    Highlight_No,
+    Highlight_Yes
+}OLED_Highlight;
+
+typedef enum
+{
+    Switched_No,
+    Switched_Yes
+}PAGE_SWITCH;
+
+extern OLED_PAGE_SM OLED_PAGE_IDX;
+extern PAGE_SWITCH PAGE_SWITCH_STATE;
+
 void WriteCmd(void);
 void OLED_WR_CMD(uint8_t cmd);
 void OLED_WR_DATA(uint8_t data);
@@ -26,9 +48,9 @@ void OLED_Display_On(void);
 void OLED_Display_Off(void);
 void OLED_Set_Pos(uint8_t x, uint8_t y);
 void OLED_On(void);
-void OLED_ShowNum(uint8_t x,uint8_t y,unsigned int num,uint8_t len,uint8_t size2);
-void OLED_ShowChar(uint8_t x,uint8_t y,uint8_t chr,uint8_t Char_Size);
-void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t Char_Size);
+void OLED_ShowNum(uint8_t x,uint8_t y,unsigned int num,uint8_t len,uint8_t size2,OLED_Highlight highlight);
+void OLED_ShowChar(uint8_t x,uint8_t y,uint8_t chr,uint8_t Char_Size,OLED_Highlight highlight);
+void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t Char_Size,OLED_Highlight Highlight);
 void OLED_ShowCHinese(uint8_t x,uint8_t y,uint8_t no);
 
 
