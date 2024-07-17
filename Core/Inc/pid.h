@@ -26,6 +26,17 @@ typedef enum
 	Balance_remote
 }Balance_statemachine;
 
+typedef enum 
+{
+	Parameter_VERTI_P,
+	Parameter_VERTI_D,
+	Parameter_VELOC_P,
+	Parameter_VELOC_I,
+	Parameter_TURN_P,
+	Parameter_TURN_D,
+	Parameter_NUM
+}Parameter_CONFIG_SM;
+
 
 extern int Encoder_L, Encoder_R;
 extern float pitch, roll, yaw;
@@ -34,6 +45,7 @@ extern int duty;
 extern Balance_statemachine Balance_state;
 extern int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R, Err_S;
 extern float Vertical_KP ,Vertical_KD ,Velocity_KP ,Velocity_KI, Turn_KP, Turn_KD;
+extern float Med_Angle;
 extern Remote_Direction_GB Direction_G_B;
 extern Remote_Direction_LR Direction_L_R;
 

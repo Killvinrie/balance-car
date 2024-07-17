@@ -9,7 +9,6 @@
 
 #include "main.h"
 
-
 #define VelocityKP -0.25
 
 extern TIM_HandleTypeDef htim2;
@@ -18,7 +17,7 @@ extern TIM_HandleTypeDef htim4;
 Balance_statemachine Balance_state;
 Remote_Direction_GB Direction_G_B;
 Remote_Direction_LR Direction_L_R;
-
+Parameter_CONFIG_SM Parameter_Config_IDX;
 
 int duty; // for test
 int Encoder_L, Encoder_R;
@@ -29,10 +28,10 @@ short Acc_X, Acc_Y, Acc_Z;
 float Med_Angle = 0;
 
 // PID parameters
-float Vertical_KP = -350;  // -500*0.6
-float Vertical_KD = -1.02; //-1.7*0.6
-float Velocity_KP = VelocityKP;  //-0.3
-float Velocity_KI = VelocityKP/200;
+float Vertical_KP = -350;       // -500*0.6
+float Vertical_KD = -1.02;      //-1.7*0.6
+float Velocity_KP = VelocityKP; //-0.3
+float Velocity_KI = VelocityKP / 200;
 float Turn_KP, Turn_KD;
 
 int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
@@ -75,12 +74,17 @@ int control()
     // transfer data to the pid loop
     if (Balance_state == Balance_running)
     {
-//        if(Direction_G_B == Direction_F)
+        if (Direction_G_B == Direction_GO)
+            Target_Speed++;
+        else
+            Target_Speed--;
+        Target_Speed = (Target_Speed > 15) ? 15 :(Target_Speed < -15) ? (-15) : Target_Speed;
+
         Velocity_Out = Velocity_Loop(Target_Speed, Encoder_L, Encoder_R);
         Vertical_Out = Vertical_Loop(Velocity_Out + Med_Angle, roll, Gyro_X);
         // Turn_Out = Turn_Loop(Gyro_Z, Target_Turn);
         PWM_out = Vertical_Out;
-//        PWM_out = Velocity_Out;
+        //        PWM_out = Velocity_Out;
         DUTY_L = PWM_out - Turn_Out;
         DUTY_R = PWM_out + Turn_Out;
         Duty_motor(DUTY_L, DUTY_R);

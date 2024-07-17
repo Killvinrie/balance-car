@@ -21,6 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32f1xx_it.h"
 #include "oled.h"
 #include "IIC.h"
 #include "mpu6050.h"
@@ -64,6 +65,8 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 uint8_t display_buf[20];
 uint8_t Frame, FPS;
+uint8_t Rx_buffer[2];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -202,6 +205,7 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
+  HAL_UART_Receive_IT(&huart2, Rx_buffer, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -246,6 +250,12 @@ int main(void)
 
       sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
       OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
+      
+      
+      if (Control_Mode == Mode_Move)//Remote control Mode display
+        OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
+      else
+        OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
 
       // Balance state display HIGHLIGHT
       if (Balance_state == Balance_idle)
@@ -265,7 +275,14 @@ int main(void)
 
       sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
       OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+      
 
+
+      
+      if (Control_Mode == Mode_Move)//Remote control Mode display
+        OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
+      else
+        OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
       // Balance state display HIGHLIGHT
       if (Balance_state == Balance_idle)
         OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
@@ -287,6 +304,22 @@ int main(void)
       sprintf((char *)display_buf, "Veloc:%d   ", Velocity_Out);
       OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
 
+
+
+      OLED_ShowString(80, 2, Rx_buffer, 16, Highlight_Yes); // show remote instruction
+            sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
+      OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+      sprintf((char *)display_buf, "Med:%.2f  ", Med_Angle);//show Med_Angle
+      OLED_ShowString(0, 6, display_buf, 8, Highlight_Yes);
+      
+      
+
+
+      
+      if (Control_Mode == Mode_Move)//Remote control Mode display
+        OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
+      else
+        OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
       // Balance state display HIGHLIGHT
       if (Balance_state == Balance_idle)
         OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);

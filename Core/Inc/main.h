@@ -41,8 +41,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern __IO uint32_t uwTick;
-extern uint8_t FPS;
+extern uint8_t Rx_buffer[2];
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
