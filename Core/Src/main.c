@@ -67,6 +67,8 @@ uint8_t display_buf[20];
 uint8_t Frame, FPS;
 uint8_t Rx_buffer[2];
 
+uint8_t return_NUM;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -185,21 +187,21 @@ void Parameter_Display(void)
 {
   sprintf((char *)display_buf, "FPS:%d ", FPS);
   OLED_ShowString(80, 0, display_buf, 8, Highlight_No);
-
+  
   sprintf((char *)display_buf, "Med:%.2f  ", Med_Angle); // show Med_Angle
-  OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 0, display_buf, 8, (Parameter_IDX == Parameter_Med_Angle));
   sprintf((char *)display_buf, "Verti_P:%.2f  ", Vertical_KP);
-  OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 1, display_buf, 8, (Parameter_IDX == Parameter_VERTI_P));
   sprintf((char *)display_buf, "Verti_D:%.2f  ", Vertical_KD);
-  OLED_ShowString(0, 2, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 2, display_buf, 8, (Parameter_IDX == Parameter_VERTI_D));
   sprintf((char *)display_buf, "Veloc_P:%.2f  ", Velocity_KP);
-  OLED_ShowString(0, 3, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 3, display_buf, 8, (Parameter_IDX == Parameter_VELOC_P));
   sprintf((char *)display_buf, "Veloc_I:%.2f  ", Velocity_KI);
-  OLED_ShowString(0, 4, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 4, display_buf, 8, (Parameter_IDX == Parameter_VELOC_I));
   sprintf((char *)display_buf, "Turn_KP:%.2f  ", Turn_KP);
-  OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 5, display_buf, 8, (Parameter_IDX == Parameter_TURN_P));
   sprintf((char *)display_buf, "Turn_KD:%.2f  ", Turn_KD);
-  OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
+  OLED_ShowString(0, 6, display_buf, 8, (Parameter_IDX == Parameter_TURN_D));
 
   sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
   OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
@@ -209,10 +211,13 @@ void Parameter_Display(void)
   else
     OLED_ShowString(80, 7, "RUNNING", 8, Highlight_No);
 }
+
 void State_Display(void)
 {
   sprintf((char *)display_buf, "FPS:%d ", FPS);
   OLED_ShowString(80, 0, display_buf, 8, Highlight_No);
+
+  
 
   sprintf((char *)display_buf, "Verti:%.d   ", Vertical_Out);
   OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
@@ -286,7 +291,7 @@ int main(void)
 
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
-  // Duty_motor(-5000, 6000); //test motor
+  //  Duty_motor(-5000, 6000); //test motor
   HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 

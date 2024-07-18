@@ -3,7 +3,7 @@
 
 #include "stm32f1xx_hal.h"
 #include "main.h"
-
+#include "oled.h"
 
 typedef enum
 {
@@ -70,6 +70,9 @@ extern Remote_Direction_LR Direction_L_R;
 extern uint8_t Parameter_IDX;
 
 int control();
+
 Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter);
 FlagStatus Parameter_IDX_LOCKED();
+
+
 #endif

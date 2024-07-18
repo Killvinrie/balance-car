@@ -288,7 +288,7 @@ void USART2_IRQHandler(void)
       else
       {
         Parameter_IDX++;
-        if (Parameter_IDX > Parameter_NUM)
+        if (Parameter_IDX >= Parameter_NUM)
           Parameter_IDX = Parameter_Med_Angle;
       }
     }
@@ -346,11 +346,10 @@ void USART2_IRQHandler(void)
   {
     if (Control_Mode == Mode_Config)
     {
-      PID_Parameter[Parameter_IDX].state = Parameter_Selected;
-    }
-    else
-    {
-      PID_Parameter[Parameter_IDX].state = Parameter_Free;
+      if (PID_Parameter[Parameter_IDX].state == Parameter_Free)
+        PID_Parameter[Parameter_IDX].state = Parameter_Selected;
+      else
+        PID_Parameter[Parameter_IDX].state = Parameter_Free;
     }
   }
   else

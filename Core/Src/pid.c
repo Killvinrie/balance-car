@@ -8,6 +8,7 @@
 #include "inv_mpu_dmp_motion_driver.h"
 
 #include "main.h"
+#include "oled.h"
 
 #define VelocityKP -0.25
 
@@ -55,6 +56,7 @@ Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
     {
         return Parameter_Selected;
     }
+    else return Parameter_Free;
 }
 
 FlagStatus Parameter_IDX_LOCKED()
@@ -64,13 +66,10 @@ FlagStatus Parameter_IDX_LOCKED()
         if (IS_PARAMETER_SELECTED(&PID_Parameter[i]) == Parameter_Selected)
             return SET;
     }
+    return RESET;
 }
 
-// void PID_Parameter_init(Parameter_CONFIG_TYPE * parameter)
-// {
-//     parameter->parameter_ptr = &Vertical_KP;
 
-// }
 
 int Vertical_Loop(float Exception, float Angle, float Gyro_X)
 {
