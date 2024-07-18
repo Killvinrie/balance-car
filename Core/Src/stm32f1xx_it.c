@@ -270,7 +270,7 @@ void USART2_IRQHandler(void)
       else
       {
         Parameter_IDX--;
-        if (Parameter_IDX < Parameter_Med_Angle)
+        if (Parameter_IDX >= Parameter_NUM)
           Parameter_IDX = Parameter_TURN_D;
       }
     }
