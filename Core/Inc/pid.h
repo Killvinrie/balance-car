@@ -6,29 +6,28 @@
 
 
 typedef enum
-{	
+{
 	Direction_G_B_DEFAULT,
 	Direction_GO,
 	Direction_BACK,
-}Remote_Direction_GB;
+} Remote_Direction_GB;
 
 typedef enum
 {
 	Direction_L_R_DEFAULT,
 	Direction_LEFT,
 	Direction_RIGHT
-}Remote_Direction_LR;
-
+} Remote_Direction_LR;
 
 typedef enum
-{	
+{
 	Balance_idle,
 	Balance_stop,
 	Balance_running,
 	Balance_remote
-}Balance_statemachine;
+} Balance_statemachine;
 
-typedef enum 
+typedef enum
 {
 	Parameter_Med_Angle,
 	Parameter_VERTI_P,
@@ -38,34 +37,39 @@ typedef enum
 	Parameter_TURN_P,
 	Parameter_TURN_D,
 	Parameter_NUM
-}Parameter_CONFIG_SM;
+} Parameter_CONFIG_SM;
 
-typedef enum 
+typedef enum
 {
 	Parameter_Free,
 	Parameter_Selected
-}Parameter_state;
+} Parameter_state;
 
-typedef struct 
+typedef struct
 {
 	float *parameter_ptr;
 	Parameter_state state;
-}Parameter_CONFIG_TYPE;
+} Parameter_CONFIG_TYPE;
 
-#define IS_PARAMETER_SELECTED(parameter)	(parameter[])
+#define IS_Parameter_Highlight(__HANDLE__)  (__HANDLE__ == Parameter_IDX)
+
+
+
 extern Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM];
 
 extern int Encoder_L, Encoder_R;
 extern float pitch, roll, yaw;
-extern short Gyro_X,Gyro_Y,Gyro_Z;
+extern short Gyro_X, Gyro_Y, Gyro_Z;
 extern int duty;
 extern Balance_statemachine Balance_state;
 extern int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R, Err_S;
-extern float Vertical_KP ,Vertical_KD ,Velocity_KP ,Velocity_KI, Turn_KP, Turn_KD;
+extern float Vertical_KP, Vertical_KD, Velocity_KP, Velocity_KI, Turn_KP, Turn_KD;
 extern float Med_Angle;
 extern Remote_Direction_GB Direction_G_B;
 extern Remote_Direction_LR Direction_L_R;
-
+extern uint8_t Parameter_IDX;
 
 int control();
+Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter);
+FlagStatus Parameter_IDX_LOCKED();
 #endif

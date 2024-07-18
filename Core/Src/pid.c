@@ -37,6 +37,8 @@ float Turn_KP, Turn_KD;
 int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
 int Err_S;
 
+uint8_t Parameter_IDX;
+
 Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM] =
     {
         {&Med_Angle, Parameter_Free},
@@ -47,17 +49,23 @@ Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM] =
         {&Turn_KP, Parameter_Free},
         {&Turn_KD, Parameter_Free}};
 
-Parameter_CONFIG_SM IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
-{   
-    int i;
-    for(i = 0, i < Parameter_NUM, i++)
+Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
+{
+    if (parameter->state == Parameter_Selected)
     {
-        if(&parameter[i]->state == Parameter_Selected)
-        {
-            return 
-        }
+        return Parameter_Selected;
     }
 }
+
+FlagStatus Parameter_IDX_LOCKED()
+{
+    for (int i = 0; i < Parameter_NUM; i++)
+    {
+        if (IS_PARAMETER_SELECTED(&PID_Parameter[i]) == Parameter_Selected)
+            return SET;
+    }
+}
+
 // void PID_Parameter_init(Parameter_CONFIG_TYPE * parameter)
 // {
 //     parameter->parameter_ptr = &Vertical_KP;

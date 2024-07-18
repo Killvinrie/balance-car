@@ -21,6 +21,10 @@
         "stdio.h": "c",
         "stm32f1xx_hal_cortex.h": "c",
         "stm32f1xx_hal_uart.h": "c",
-        "stm32f1xx_it.h": "c"
+        "stm32f1xx_it.h": "c",
+        "stm32f1xx_hal_dma.h": "c",
+        "stm32f1xx_hal_exti.h": "c",
+        "stm32f1xx.h": "c",
+        "stm32_hal_legacy.h": "c"
     }
 }

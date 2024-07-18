@@ -257,63 +257,67 @@ void USART2_IRQHandler(void)
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
   BLE_DATA = Rx_buffer[0];
-  if (BLE_DATA == 'G')
+  if (BLE_DATA == 'U')
   {
     if (Control_Mode == Mode_Move)
       Direction_G_B = Direction_GO;
     else if (Control_Mode == Mode_Config)
     {
-      if () // parameter was selected
+      if (Parameter_IDX_LOCKED() == SET) // parameter was selected
       {
-        parameter_value++;
+        (*PID_Parameter[Parameter_IDX].parameter_ptr)++;
       }
       else
       {
-        parameter_IDX--;
+        Parameter_IDX--;
+        if (Parameter_IDX < Parameter_Med_Angle)
+          Parameter_IDX = Parameter_TURN_D;
       }
     }
-    // Med_Angle++;
   }
-  else if (BLE_DATA == 'B')
+  else if (BLE_DATA == 'D')
   {
     if (Control_Mode == Mode_Move)
       Direction_G_B = Direction_BACK;
     else if (Control_Mode == Mode_Config)
     {
-      if (Control_Mode == Mode_Move)
-        Direction_G_B = Direction_GO;
-      else if (Control_Mode == Mode_Config)
+      if (Parameter_IDX_LOCKED() == SET) // parameter was selected
       {
-        if () // parameter was selected
-        {
-          parametervalue--;
-        }
-        else
-        {
-          parameter_IDX++;
-        }
+        (*PID_Parameter[Parameter_IDX].parameter_ptr)--;
+      }
+      else
+      {
+        Parameter_IDX++;
+        if (Parameter_IDX > Parameter_NUM)
+          Parameter_IDX = Parameter_Med_Angle;
       }
     }
-    // Med_Angle--;
   }
+
   else if (BLE_DATA == 'L')
+  {
     if (Control_Mode == Mode_Oled)
     {
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX--;
       if (OLED_PAGE_IDX < 0)
         OLED_PAGE_IDX = OLED_PAGE_State;
     }
     else
       Direction_L_R = Direction_LEFT;
+  }
   else if (BLE_DATA == 'R')
+  {
     if (Control_Mode == Mode_Oled)
     {
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX++;
       if (OLED_PAGE_IDX > 2)
         OLED_PAGE_IDX = OLED_PAGE_Sensor;
     }
     else
       Direction_L_R = Direction_RIGHT;
+  }
   else if (BLE_DATA == 'S')
   {
     Target_Speed = 0;
@@ -342,6 +346,11 @@ void USART2_IRQHandler(void)
   {
     if (Control_Mode == Mode_Config)
     {
+      PID_Parameter[Parameter_IDX].state = Parameter_Selected;
+    }
+    else
+    {
+      PID_Parameter[Parameter_IDX].state = Parameter_Free;
     }
   }
   else

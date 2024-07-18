@@ -150,6 +150,91 @@ void HAL_IncTick(void)
     Frame = 0;
   }
 }
+
+void Sensor_Display(void)
+{
+  sprintf((char *)display_buf, "FPS:%d ", FPS);
+  OLED_ShowString(80, 0, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "ENC_L:%d   ", Encoder_L);
+  OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "ENC_R:%d   ", Encoder_R);
+  OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
+  OLED_ShowString(0, 2, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
+  OLED_ShowString(0, 3, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "roll:%.2f   ", roll);
+  OLED_ShowString(0, 4, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Distance:%.2f  ", distance);
+  OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
+  OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+  OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
+  // Balance state display HIGHLIGHT
+  if (Balance_state == Balance_idle)
+    OLED_ShowString(90, 7, "IDLE", 8, Highlight_No);
+  else
+    OLED_ShowString(80, 7, "RUNNING", 8, Highlight_No);
+}
+void Parameter_Display(void)
+{
+  sprintf((char *)display_buf, "FPS:%d ", FPS);
+  OLED_ShowString(80, 0, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "Med:%.2f  ", Med_Angle); // show Med_Angle
+  OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Verti_P:%.2f  ", Vertical_KP);
+  OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Verti_D:%.2f  ", Vertical_KD);
+  OLED_ShowString(0, 2, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Veloc_P:%.2f  ", Velocity_KP);
+  OLED_ShowString(0, 3, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Veloc_I:%.2f  ", Velocity_KI);
+  OLED_ShowString(0, 4, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Turn_KP:%.2f  ", Turn_KP);
+  OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Turn_KD:%.2f  ", Turn_KD);
+  OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+  OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
+  // Balance state display HIGHLIGHT
+  if (Balance_state == Balance_idle)
+    OLED_ShowString(90, 7, "IDLE", 8, Highlight_No);
+  else
+    OLED_ShowString(80, 7, "RUNNING", 8, Highlight_No);
+}
+void State_Display(void)
+{
+  sprintf((char *)display_buf, "FPS:%d ", FPS);
+  OLED_ShowString(80, 0, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "Verti:%.d   ", Vertical_Out);
+  OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
+  sprintf((char *)display_buf, "Veloc:%d   ", Velocity_Out);
+  OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
+
+  OLED_ShowString(80, 2, Rx_buffer, 16, Highlight_No); // show remote instruction
+  sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
+  OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
+
+  sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+  OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
+  // if (Control_Mode == Mode_Move)//Remote control Mode display
+  //   OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
+  // else
+  //   OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
+  // Balance state display HIGHLIGHT
+  if (Balance_state == Balance_idle)
+    OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
+  else
+    OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+}
 /* USER CODE END 0 */
 
 /**
@@ -212,120 +297,37 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // if (uwTick % 10 == 0)
-    // {
-    //   Encoder_L = Get_Speed(&htim2);
-    //   Encoder_R = Get_Speed(&htim4);
-    //   sprintf((char *)display_buf, "ENC_L:%d      ", Encoder_L);
-    //   OLED_ShowString(0, 0, display_buf, 8);
-    //   sprintf((char *)display_buf, "ENC_R:%d      ", Encoder_R);
-    //   OLED_ShowString(0, 1, display_buf, 8);
-    // }
-
     Distance_Trig();
+
     switch (OLED_PAGE_IDX)
     {
     case OLED_PAGE_Sensor:
-      if (PAGE_REFRESH_STATE == Refresh_REQUEST)
+      if (PAGE_REFRESH_STATE == Refresh_REQUEST) //  WHEN PAGE SWITCH OR KEY Variable change was detected ,  OLED need to be refresh
       {
         OLED_Clear();
         PAGE_REFRESH_STATE = Refresh_IDLE;
       }
-      sprintf((char *)display_buf, "FPS:%d ", FPS);
-      OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
-
-      sprintf((char *)display_buf, "ENC_L:%d   ", Encoder_L);
-      OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
-      sprintf((char *)display_buf, "ENC_R:%d   ", Encoder_R);
-      OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
-
-      sprintf((char *)display_buf, "pitch:%.2f   ", pitch);
-      OLED_ShowString(0, 2, display_buf, 8, Highlight_No);
-      sprintf((char *)display_buf, "yaw:%.2f   ", yaw);
-      OLED_ShowString(0, 3, display_buf, 8, Highlight_No);
-      sprintf((char *)display_buf, "roll:%.2f   ", roll);
-      OLED_ShowString(0, 4, display_buf, 8, Highlight_No);
-      sprintf((char *)display_buf, "Distance:%.2f  ", distance);
-      OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
-
-      sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
-      OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
-      
-      
-      if (Control_Mode == Mode_Move)//Remote control Mode display
-        OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
-      else
-        OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
-
-      // Balance state display HIGHLIGHT
-      if (Balance_state == Balance_idle)
-        OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
-      else
-        OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+      Sensor_Display();
       Frame++;
       break;
+
     case OLED_PAGE_Parameter:
-      if (PAGE_REFRESH_STATE == Refresh_REQUEST)
+      if (PAGE_REFRESH_STATE == Refresh_REQUEST) //  WHEN PAGE SWITCH OR KEY Variable change was detected ,  OLED need to be refresh
       {
         OLED_Clear();
         PAGE_REFRESH_STATE = Refresh_IDLE;
       }
-      sprintf((char *)display_buf, "FPS:%d ", FPS);
-      OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
-
-      sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
-      OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
-      
-
-
-      
-      if (Control_Mode == Mode_Move)//Remote control Mode display
-        OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
-      else
-        OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
-      // Balance state display HIGHLIGHT
-      if (Balance_state == Balance_idle)
-        OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
-      else
-        OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+      Parameter_Display();
       Frame++;
       break;
+
     case OLED_PAGE_State:
-      if (PAGE_REFRESH_STATE == Refresh_REQUEST)
+      if (PAGE_REFRESH_STATE == Refresh_REQUEST) //  WHEN PAGE SWITCH OR KEY Variable change was detected ,  OLED need to be refresh
       {
         OLED_Clear();
         PAGE_REFRESH_STATE = Refresh_IDLE;
       }
-      sprintf((char *)display_buf, "FPS:%d ", FPS);
-      OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
-
-      sprintf((char *)display_buf, "Verti:%.d   ", Vertical_Out);
-      OLED_ShowString(0, 0, display_buf, 8, Highlight_No);
-      sprintf((char *)display_buf, "Veloc:%d   ", Velocity_Out);
-      OLED_ShowString(0, 1, display_buf, 8, Highlight_No);
-
-
-
-      OLED_ShowString(80, 2, Rx_buffer, 16, Highlight_Yes); // show remote instruction
-      sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
-      OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
-      sprintf((char *)display_buf, "Med:%.2f  ", Med_Angle);//show Med_Angle
-      OLED_ShowString(0, 6, display_buf, 8, Highlight_Yes);
-      
-      
-
-
-      sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
-      OLED_ShowString(80, 6, display_buf, 8, Highlight_Yes);
-      // if (Control_Mode == Mode_Move)//Remote control Mode display
-      //   OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);
-      // else
-      //   OLED_ShowString(80, 6, "Config", 8, Highlight_Yes);
-      // Balance state display HIGHLIGHT
-      if (Balance_state == Balance_idle)
-        OLED_ShowString(90, 7, "IDLE", 8, Highlight_Yes);
-      else
-        OLED_ShowString(80, 7, "RUNNING", 8, Highlight_Yes);
+      State_Display();
       Frame++;
       break;
     }
