@@ -37,6 +37,33 @@ float Turn_KP, Turn_KD;
 int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
 int Err_S;
 
+Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM] =
+    {
+        {&Med_Angle, Parameter_Free},
+        {&Vertical_KP, Parameter_Free},
+        {&Vertical_KD, Parameter_Free},
+        {&Velocity_KP, Parameter_Free},
+        {&Velocity_KI, Parameter_Free},
+        {&Turn_KP, Parameter_Free},
+        {&Turn_KD, Parameter_Free}};
+
+Parameter_CONFIG_SM IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
+{   
+    int i;
+    for(i = 0, i < Parameter_NUM, i++)
+    {
+        if(&parameter[i]->state == Parameter_Selected)
+        {
+            return 
+        }
+    }
+}
+// void PID_Parameter_init(Parameter_CONFIG_TYPE * parameter)
+// {
+//     parameter->parameter_ptr = &Vertical_KP;
+
+// }
+
 int Vertical_Loop(float Exception, float Angle, float Gyro_X)
 {
     int result;

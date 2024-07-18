@@ -21,7 +21,8 @@ typedef enum
 {
     OLED_PAGE_Sensor,
     OLED_PAGE_Parameter,
-    OLED_PAGE_State
+    OLED_PAGE_State,
+    OLED_PAGE_NUM
 }OLED_PAGE_SM;
 
 typedef enum 
@@ -32,12 +33,12 @@ typedef enum
 
 typedef enum
 {
-    Switched_No,
-    Switched_Yes
-}PAGE_SWITCH;
+    Refresh_IDLE,
+    Refresh_REQUEST
+}PAGE_REFRESH;
 
 extern OLED_PAGE_SM OLED_PAGE_IDX;
-extern PAGE_SWITCH PAGE_SWITCH_STATE;
+extern PAGE_REFRESH PAGE_REFRESH_STATE;
 
 void WriteCmd(void);
 void OLED_WR_CMD(uint8_t cmd);

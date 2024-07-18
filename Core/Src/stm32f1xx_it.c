@@ -261,20 +261,59 @@ void USART2_IRQHandler(void)
   {
     if (Control_Mode == Mode_Move)
       Direction_G_B = Direction_GO;
-    else
-      Med_Angle++;
+    else if (Control_Mode == Mode_Config)
+    {
+      if () // parameter was selected
+      {
+        parameter_value++;
+      }
+      else
+      {
+        parameter_IDX--;
+      }
+    }
+    // Med_Angle++;
   }
   else if (BLE_DATA == 'B')
   {
     if (Control_Mode == Mode_Move)
       Direction_G_B = Direction_BACK;
-    else
-      Med_Angle--;
+    else if (Control_Mode == Mode_Config)
+    {
+      if (Control_Mode == Mode_Move)
+        Direction_G_B = Direction_GO;
+      else if (Control_Mode == Mode_Config)
+      {
+        if () // parameter was selected
+        {
+          parametervalue--;
+        }
+        else
+        {
+          parameter_IDX++;
+        }
+      }
+    }
+    // Med_Angle--;
   }
   else if (BLE_DATA == 'L')
-    Direction_L_R = Direction_LEFT;
+    if (Control_Mode == Mode_Oled)
+    {
+      OLED_PAGE_IDX--;
+      if (OLED_PAGE_IDX < 0)
+        OLED_PAGE_IDX = OLED_PAGE_State;
+    }
+    else
+      Direction_L_R = Direction_LEFT;
   else if (BLE_DATA == 'R')
-    Direction_L_R = Direction_RIGHT;
+    if (Control_Mode == Mode_Oled)
+    {
+      OLED_PAGE_IDX++;
+      if (OLED_PAGE_IDX > 2)
+        OLED_PAGE_IDX = OLED_PAGE_Sensor;
+    }
+    else
+      Direction_L_R = Direction_RIGHT;
   else if (BLE_DATA == 'S')
   {
     Target_Speed = 0;
@@ -286,13 +325,23 @@ void USART2_IRQHandler(void)
     switch (Control_Mode)
     {
     case Mode_Move:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       Control_Mode = Mode_Config;
       break;
     case Mode_Config:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
+      Control_Mode = Mode_Oled;
+      break;
+    case Mode_Oled:
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       Control_Mode = Mode_Move;
       break;
+    }
+  }
+  else if (BLE_DATA == 'O')
+  {
+    if (Control_Mode == Mode_Config)
+    {
     }
   }
   else

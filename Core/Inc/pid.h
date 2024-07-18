@@ -30,6 +30,7 @@ typedef enum
 
 typedef enum 
 {
+	Parameter_Med_Angle,
 	Parameter_VERTI_P,
 	Parameter_VERTI_D,
 	Parameter_VELOC_P,
@@ -39,6 +40,20 @@ typedef enum
 	Parameter_NUM
 }Parameter_CONFIG_SM;
 
+typedef enum 
+{
+	Parameter_Free,
+	Parameter_Selected
+}Parameter_state;
+
+typedef struct 
+{
+	float *parameter_ptr;
+	Parameter_state state;
+}Parameter_CONFIG_TYPE;
+
+#define IS_PARAMETER_SELECTED(parameter)	(parameter[])
+extern Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM];
 
 extern int Encoder_L, Encoder_R;
 extern float pitch, roll, yaw;

@@ -37,6 +37,8 @@ extern "C"
   {
     Mode_Move,
     Mode_Config,
+    Mode_Oled,
+    Mode_PID,
     Mode_Num
   } Control_Mode_SM;
   /* USER CODE END ET */

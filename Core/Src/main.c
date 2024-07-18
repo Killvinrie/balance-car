@@ -98,19 +98,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     switch (Balance_state)
     {
     case Balance_idle:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       Balance_state = Balance_running;
       break;
     case Balance_running:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       Balance_state = Balance_stop;
       break;
     case Balance_stop:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       Balance_state = Balance_running;
       break;
     default:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       Balance_state = Balance_idle;
     }
   }
@@ -120,15 +120,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     switch (OLED_PAGE_IDX)
     {
     case OLED_PAGE_Sensor:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX = OLED_PAGE_Parameter;
       break;
     case OLED_PAGE_Parameter:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX = OLED_PAGE_State;
       break;
     case OLED_PAGE_State:
-      PAGE_SWITCH_STATE = Switched_Yes;
+      PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX = OLED_PAGE_Sensor;
       break;
     }
@@ -226,10 +226,10 @@ int main(void)
     switch (OLED_PAGE_IDX)
     {
     case OLED_PAGE_Sensor:
-      if (PAGE_SWITCH_STATE == Switched_Yes)
+      if (PAGE_REFRESH_STATE == Refresh_REQUEST)
       {
         OLED_Clear();
-        PAGE_SWITCH_STATE = Switched_No;
+        PAGE_REFRESH_STATE = Refresh_IDLE;
       }
       sprintf((char *)display_buf, "FPS:%d ", FPS);
       OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
@@ -265,10 +265,10 @@ int main(void)
       Frame++;
       break;
     case OLED_PAGE_Parameter:
-      if (PAGE_SWITCH_STATE == Switched_Yes)
+      if (PAGE_REFRESH_STATE == Refresh_REQUEST)
       {
         OLED_Clear();
-        PAGE_SWITCH_STATE = Switched_No;
+        PAGE_REFRESH_STATE = Refresh_IDLE;
       }
       sprintf((char *)display_buf, "FPS:%d ", FPS);
       OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
@@ -291,10 +291,10 @@ int main(void)
       Frame++;
       break;
     case OLED_PAGE_State:
-      if (PAGE_SWITCH_STATE == Switched_Yes)
+      if (PAGE_REFRESH_STATE == Refresh_REQUEST)
       {
         OLED_Clear();
-        PAGE_SWITCH_STATE = Switched_No;
+        PAGE_REFRESH_STATE = Refresh_IDLE;
       }
       sprintf((char *)display_buf, "FPS:%d ", FPS);
       OLED_ShowString(80, 0, display_buf, 8, Highlight_Yes);
