@@ -263,7 +263,7 @@ void USART2_IRQHandler(void)
       Direction_G_B = Direction_GO;
     else if (Control_Mode == Mode_Config)
     {
-      if (Parameter_IDX_LOCKED() == SET) // parameter was selected
+      if (Parameter_IDX_LOCKED(PID_Parameter) == SET) // parameter was selected
       {
         (*PID_Parameter[Parameter_IDX].parameter_ptr)++;
       }
@@ -281,7 +281,7 @@ void USART2_IRQHandler(void)
       Direction_G_B = Direction_BACK;
     else if (Control_Mode == Mode_Config)
     {
-      if (Parameter_IDX_LOCKED() == SET) // parameter was selected
+      if (Parameter_IDX_LOCKED(PID_Parameter) == SET) // parameter was selected
       {
         (*PID_Parameter[Parameter_IDX].parameter_ptr)--;
       }

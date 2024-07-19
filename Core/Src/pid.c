@@ -59,14 +59,16 @@ Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
     else return Parameter_Free;
 }
 
-FlagStatus Parameter_IDX_LOCKED()
+FlagStatus Parameter_IDX_LOCKED(Parameter_CONFIG_TYPE *parameter)
 {
     for (int i = 0; i < Parameter_NUM; i++)
     {
-        if (IS_PARAMETER_SELECTED(&PID_Parameter[i]) == Parameter_Selected)
+        if (parameter->state == Parameter_Selected)
             return SET;
+            parameter++;
     }
     return RESET;
+
 }
 
 

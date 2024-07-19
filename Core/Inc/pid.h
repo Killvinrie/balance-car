@@ -72,7 +72,7 @@ extern uint8_t Parameter_IDX;
 int control();
 
 Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter);
-FlagStatus Parameter_IDX_LOCKED();
+FlagStatus Parameter_IDX_LOCKED(Parameter_CONFIG_TYPE *parameter);
 
 
 #endif
