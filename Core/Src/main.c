@@ -141,6 +141,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     // Encoder_R = Get_Speed(&htim4);
     // do nothing.
     control();
+	
+	
   }
 }
 void HAL_IncTick(void)
