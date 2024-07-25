@@ -259,7 +259,7 @@ void USART2_IRQHandler(void)
   BLE_DATA = Rx_buffer[0];
   if (BLE_DATA == 'U')
   {
-    if (Control_Mode == Mode_Move)
+    if (Control_Mode == Mode_Move) 
       Direction_G_B = Direction_GO;
     else if (Control_Mode == Mode_Config)
     {
@@ -296,26 +296,26 @@ void USART2_IRQHandler(void)
 
   else if (BLE_DATA == 'L')
   {
-    if (Control_Mode == Mode_Oled)
+    if (Control_Mode == Mode_Oled) //oled page switch mode
     {
       PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX--;
       if (OLED_PAGE_IDX < 0)
         OLED_PAGE_IDX = OLED_PAGE_State;
     }
-    else
+    else                            //control mode
       Direction_L_R = Direction_LEFT;
   }
   else if (BLE_DATA == 'R')
   {
-    if (Control_Mode == Mode_Oled)
+    if (Control_Mode == Mode_Oled) //oled page switch mode
     {
       PAGE_REFRESH_STATE = Refresh_REQUEST;
       OLED_PAGE_IDX++;
       if (OLED_PAGE_IDX > 2)
         OLED_PAGE_IDX = OLED_PAGE_Sensor;
     }
-    else
+    else                          //control mode
       Direction_L_R = Direction_RIGHT;
   }
   else if (BLE_DATA == 'S')

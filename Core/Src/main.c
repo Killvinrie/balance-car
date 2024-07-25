@@ -175,7 +175,7 @@ void Sensor_Display(void)
   sprintf((char *)display_buf, "GYRO_X:%.2f   ", (float)Gyro_X);
   OLED_ShowString(0, 6, display_buf, 8, Highlight_No);
 
-  sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+  sprintf((char *)display_buf, "MODE:%d", Control_Mode);
   OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
   // Balance state display HIGHLIGHT
   if (Balance_state == Balance_idle)
@@ -203,7 +203,7 @@ void Parameter_Display(void)
   sprintf((char *)display_buf, "Turn_KD:%.2f  ", Turn_KD);
   OLED_ShowString(0, 6, display_buf, 8, (Parameter_IDX == Parameter_TURN_D));
 
-  sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+  sprintf((char *)display_buf, "MODE:%d", Control_Mode);
   OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
   // Balance state display HIGHLIGHT
   if (Balance_state == Balance_idle)
@@ -228,7 +228,7 @@ void State_Display(void)
   sprintf((char *)display_buf, "Target_S:%d   ", Target_Speed);
   OLED_ShowString(0, 5, display_buf, 8, Highlight_No);
 
-  sprintf((char *)display_buf, "MODE:%d   ", Control_Mode);
+  sprintf((char *)display_buf, "MODE:%d", Control_Mode);
   OLED_ShowString(80, 6, display_buf, 8, Highlight_No);
   // if (Control_Mode == Mode_Move)//Remote control Mode display
   //   OLED_ShowString(90, 6, "Move", 8, Highlight_Yes);

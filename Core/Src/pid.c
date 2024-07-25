@@ -33,7 +33,7 @@ float Vertical_KP = -350;       // -500*0.6
 float Vertical_KD = -1.02;      //-1.7*0.6
 float Velocity_KP = VelocityKP; //-0.3
 float Velocity_KI = VelocityKP / 200;
-float Turn_KP, Turn_KD;
+float Turn_KP=10, Turn_KD=0;
 
 int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
 int Err_S;
@@ -118,7 +118,7 @@ int control()
 
         Velocity_Out = Velocity_Loop(Target_Speed, Encoder_L, Encoder_R);
         Vertical_Out = Vertical_Loop(Velocity_Out + Med_Angle, roll, Gyro_X);
-        // Turn_Out = Turn_Loop(Gyro_Z, Target_Turn);
+        Turn_Out = Turn_Loop(Gyro_Z, Target_Turn);
         PWM_out = Vertical_Out;
         //        PWM_out = Velocity_Out;
         DUTY_L = PWM_out - Turn_Out;
