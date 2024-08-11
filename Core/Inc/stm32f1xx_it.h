@@ -46,6 +46,7 @@ extern "C"
   /* USER CODE BEGIN EC */
 
   extern Control_Mode_SM Control_Mode;
+  extern uint8_t Parameter_Bling_Enable;
   /* USER CODE END EC */
 
   /* Exported macro ------------------------------------------------------------*/

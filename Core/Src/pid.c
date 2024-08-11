@@ -27,13 +27,14 @@ short Gyro_X, Gyro_Y, Gyro_Z;
 short Acc_X, Acc_Y, Acc_Z;
 
 float Med_Angle = 0;
+float Med_Yaw = 0;
 
 // PID parameters
 float Vertical_KP = -350;       // -500*0.6
 float Vertical_KD = -1.02;      //-1.7*0.6
 float Velocity_KP = VelocityKP; //-0.3
 float Velocity_KI = VelocityKP / 200;
-float Turn_KP=10, Turn_KD=0;
+float Turn_KP = 10, Turn_KD = 0;
 
 int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R;
 int Err_S;
@@ -48,15 +49,17 @@ Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM] =
         {&Velocity_KP, Parameter_Free},
         {&Velocity_KI, Parameter_Free},
         {&Turn_KP, Parameter_Free},
-        {&Turn_KD, Parameter_Free}};
+        {&Turn_KD, Parameter_Free},
+        {&Med_Yaw, Parameter_Free}};
 
-Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
+Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE * parameter)
 {
     if (parameter->state == Parameter_Selected)
     {
         return Parameter_Selected;
     }
-    else return Parameter_Free;
+    else
+        return Parameter_Free;
 }
 
 FlagStatus Parameter_IDX_LOCKED(Parameter_CONFIG_TYPE *parameter)
@@ -65,13 +68,10 @@ FlagStatus Parameter_IDX_LOCKED(Parameter_CONFIG_TYPE *parameter)
     {
         if (parameter->state == Parameter_Selected)
             return SET;
-            parameter++;
+        parameter++;
     }
     return RESET;
-
 }
-
-
 
 int Vertical_Loop(float Exception, float Angle, float Gyro_X)
 {
@@ -98,6 +98,13 @@ int Velocity_Loop(int Target_Speed, int encoder_L, int encoder_R)
     return result;
 }
 
+int Turn_Loop(float Gyro_Z, float Target_Yaw, float yaw)
+{
+    int result;
+    result = Turn_KP * (Target_Yaw - yaw) + Turn_KD * Gyro_Z;
+    return result;
+}
+
 int control()
 {
     int PWM_out;
@@ -118,7 +125,7 @@ int control()
 
         Velocity_Out = Velocity_Loop(Target_Speed, Encoder_L, Encoder_R);
         Vertical_Out = Vertical_Loop(Velocity_Out + Med_Angle, roll, Gyro_X);
-        Turn_Out = Turn_Loop(Gyro_Z, Target_Turn);
+        Turn_Out = Turn_Loop(Gyro_Z, Med_Yaw, yaw);
         PWM_out = Vertical_Out;
         //        PWM_out = Velocity_Out;
         DUTY_L = PWM_out - Turn_Out;
@@ -133,9 +140,4 @@ int control()
     }
 }
 
-int Turn_Loop(float Gyro_Z, int Target_turn)
-{
-    int result;
-    result = Turn_KP * Target_turn + Turn_KD * Gyro_Z;
-    return result;
-}
+

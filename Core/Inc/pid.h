@@ -36,6 +36,7 @@ typedef enum
 	Parameter_VELOC_I,
 	Parameter_TURN_P,
 	Parameter_TURN_D,
+	Parameter_Med_Yaw,
 	Parameter_NUM
 } Parameter_CONFIG_SM;
 
@@ -65,6 +66,7 @@ extern Balance_statemachine Balance_state;
 extern int Vertical_Out, Velocity_Out, Turn_Out, Target_Speed, Target_Turn, DUTY_L, DUTY_R, Err_S;
 extern float Vertical_KP, Vertical_KD, Velocity_KP, Velocity_KI, Turn_KP, Turn_KD;
 extern float Med_Angle;
+extern float Med_Yaw;
 extern Remote_Direction_GB Direction_G_B;
 extern Remote_Direction_LR Direction_L_R;
 extern uint8_t Parameter_IDX;

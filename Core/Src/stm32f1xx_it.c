@@ -45,6 +45,7 @@
 /* USER CODE BEGIN PV */
 Control_Mode_SM Control_Mode = Mode_Move;
 uint8_t BLE_DATA;
+uint8_t Parameter_Bling_Enable = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -271,7 +272,7 @@ void USART2_IRQHandler(void)
       {
         Parameter_IDX--;
         if (Parameter_IDX >= Parameter_NUM)
-          Parameter_IDX = Parameter_TURN_D;
+          Parameter_IDX = Parameter_Med_Yaw;
       }
     }
   }
@@ -347,9 +348,16 @@ void USART2_IRQHandler(void)
     if (Control_Mode == Mode_Config)
     {
       if (PID_Parameter[Parameter_IDX].state == Parameter_Free)
+      {
         PID_Parameter[Parameter_IDX].state = Parameter_Selected;
+        Parameter_Bling_Enable = 1;
+      }
+
       else
+      {
         PID_Parameter[Parameter_IDX].state = Parameter_Free;
+        Parameter_Bling_Enable = 0;
+      }
     }
   }
   else
