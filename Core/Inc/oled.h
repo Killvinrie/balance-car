@@ -17,6 +17,10 @@
 #define   OLED_SDA_TOGGLE()             HAL_GPIO_TogglePin(GPIOx_OLED_PORT, OLED_SDA_PIN)
 ///
 
+
+
+
+
 typedef enum 
 {
     OLED_PAGE_Sensor,

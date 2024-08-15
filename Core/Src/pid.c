@@ -52,7 +52,7 @@ Parameter_CONFIG_TYPE PID_Parameter[Parameter_NUM] =
         {&Turn_KD, Parameter_Free},
         {&Med_Yaw, Parameter_Free}};
 
-Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE * parameter)
+Parameter_state IS_PARAMETER_SELECTED(Parameter_CONFIG_TYPE *parameter)
 {
     if (parameter->state == Parameter_Selected)
     {
@@ -117,11 +117,13 @@ int control()
     // transfer data to the pid loop
     if (Balance_state == Balance_running)
     {
-        // if (Direction_G_B == Direction_GO)
-        //     Target_Speed++;
-        // else
-        //     Target_Speed--;
-        // Target_Speed = (Target_Speed > 15) ? 15 :(Target_Speed < -15) ? (-15) : Target_Speed;
+        if (Direction_G_B == Direction_GO)
+            Target_Speed++;
+        else if (Direction_G_B == Direction_BACK)
+            Target_Speed--;
+        else
+            Target_Speed = 0;
+        Target_Speed = (Target_Speed > 15) ? 15 : (Target_Speed < -15) ? (-15): Target_Speed;
 
         Velocity_Out = Velocity_Loop(Target_Speed, Encoder_L, Encoder_R);
         Vertical_Out = Vertical_Loop(Velocity_Out + Med_Angle, roll, Gyro_X);
@@ -139,5 +141,3 @@ int control()
         Err_S = 0;
     }
 }
-
-
